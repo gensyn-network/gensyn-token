@@ -2,11 +2,20 @@
 src = "src"
 out = "out"
 libs = ["lib"]
-remappings = [
-    "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
-    "@uniswap/merkle-distributor/=lib/merkle-distributor/contracts/",
-    "forge-std/=lib/forge-std/src/"
-]
-solc = "0.8.23"
+solc = "0.8.30"
+show_progress = true
+
+[fuzz]
+runs = 256
+show_logs = false
+
+[invariant]
+runs = 256
+depth = 15
+fail_on_revert = true
+show_metrics = true
+
+[rpc_endpoints]
+gensyn-testnet = "https://gensyn-testnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}"
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
