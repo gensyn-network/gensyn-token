@@ -57,6 +57,7 @@ make deploy contract=${CONTRACT} network=${NETWORK} from=${ACCOUNT_NAME}
     - `GensynToken`
 - `NETWORK`
     - `gensyn-testnet`
+    - `gensyn-mainnet`
 
 So you could run, for example:
 ```bash
