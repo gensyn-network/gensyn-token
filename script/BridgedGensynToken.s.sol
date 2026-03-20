@@ -21,8 +21,10 @@ contract GensynToken_Script is Broadcaster {
     {
         uint256 timelockMinDelay = 7 days;
 
+        address gensynSafeAddress = 0x90442673dae1b1572a3D994A4D795c8977A97ECD;
+
         address[] memory timelockProposers = new address[](1);
-        timelockProposers[0] = address(1);
+        timelockProposers[0] = gensynSafeAddress;
 
         address[] memory timelockExecutors = new address[](1);
         timelockExecutors[0] = address(0); // allow anyone to execute
