@@ -253,10 +253,7 @@ contract GensynTokenTest is Tester {
 
         // Delegator signs delegation
         (uint8 v, bytes32 r, bytes32 s) = _signDelegation({
-            delegatorPrivateKey: delegatorPrivateKey,
-            delegatee: delegatee,
-            nonce: delegatorNonce,
-            expiry: expiry
+            delegatorPrivateKey: delegatorPrivateKey, delegatee: delegatee, nonce: delegatorNonce, expiry: expiry
         });
 
         // Delegator delegates by sig
@@ -345,10 +342,7 @@ contract GensynTokenTest is Tester {
 
         // Caller delegates by sig
         (v, r, s) = _signDelegation({
-            delegatorPrivateKey: callerPrivateKey,
-            delegatee: delegatee,
-            nonce: callerNonce + 1,
-            expiry: expiry
+            delegatorPrivateKey: callerPrivateKey, delegatee: delegatee, nonce: callerNonce + 1, expiry: expiry
         });
         gensynTokenProxy.delegateBySig(delegatee, callerNonce + 1, expiry, v, r, s);
         assertEq(gensynTokenProxy.nonces(caller), callerNonce + 2);
@@ -507,11 +501,7 @@ contract GensynTokenTest is Tester {
         _useNewSender(executor);
         vm.expectRevert();
         timelock.execute({
-            target: address(gensynTokenProxy),
-            value: 0,
-            payload: data,
-            predecessor: bytes32(0),
-            salt: salt
+            target: address(gensynTokenProxy), value: 0, payload: data, predecessor: bytes32(0), salt: salt
         });
 
         // Validate state before execution
@@ -520,11 +510,7 @@ contract GensynTokenTest is Tester {
         // Anyone can execute after delay has passed
         skip(minDelay);
         timelock.execute({
-            target: address(gensynTokenProxy),
-            value: 0,
-            payload: data,
-            predecessor: bytes32(0),
-            salt: salt
+            target: address(gensynTokenProxy), value: 0, payload: data, predecessor: bytes32(0), salt: salt
         });
 
         // Validate state after execution
@@ -584,11 +570,7 @@ contract GensynTokenTest is Tester {
         (v, r, s) = _sign(ownerPrivateKey, permitStructHash);
     }
 
-    function _sign(uint256 signerPrivateKey, bytes32 structHash)
-        internal
-        view
-        returns (uint8 v, bytes32 r, bytes32 s)
-    {
+    function _sign(uint256 signerPrivateKey, bytes32 structHash) internal view returns (uint8 v, bytes32 r, bytes32 s) {
         // Generate digest
         bytes32 digest = keccak256(abi.encodePacked("\x19\x01", gensynTokenProxy.DOMAIN_SEPARATOR(), structHash));
 

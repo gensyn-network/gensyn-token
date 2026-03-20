@@ -29,8 +29,7 @@ contract GensynToken_Script is Broadcaster {
         timelockExecutors[0] = address(0); // Note: Anybody can execute
 
         // Deploy
-        (TimelockController timelock, GensynToken gensynTokenImplementation, GensynToken gensynTokenProxy) =
-        _deployGensynProtocol({
+        (TimelockController timelock, GensynToken gensynTokenImplementation, GensynToken gensynTokenProxy) = _deployGensynProtocol({
             timelockMinDelay_: 7 days,
             timelockProposers_: timelockProposers,
             timelockExecutors_: timelockExecutors,
