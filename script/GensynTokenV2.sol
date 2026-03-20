@@ -17,10 +17,10 @@ contract GensynToken_Script is Broadcaster {
         GensynTokenV2 gensynTokenV2Proxy
     ) {
         
-        uint timelockMinDelay = 7 days;
+        uint timelockMinDelay = ???;
         
         address[] memory timelockProposers = new address[](1);
-        timelockProposers[0] = 0x000000000000000000000000000000000000dEaD;
+        timelockProposers[0] = ???;
 
         address[] memory timelockExecutors = new address[](1);
         timelockExecutors[0] = address(0); // allow anyone to execute
