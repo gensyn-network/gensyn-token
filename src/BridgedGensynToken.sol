@@ -6,27 +6,26 @@ import {GensynToken} from "./GensynToken.sol";
 import {IMintableBurnable} from "lib/devtools/packages/oft-evm/contracts/interfaces/IMintableBurnable.sol";
 
 /**
- * @title GensynTokenV2
+ * @title BridgedGensynToken
  * @author Gensyn
- * @notice GensynTokenV2 is an upgrade of GensynToken, which adds minting and burning capabilities
+ * @notice BridgedGensynToken adds minting and burning capabilities to GensynToken
  */
 /**
  * Deployment Plan:
- * 1. Deploy GensynTokenV2
- * 2. Later, deploy MintBurnOFTAdapter (with GensynTokenV2 as token and minterBurner)
- * 3. Grant MINTER_ROLE and BURNER_ROLE to MintBurnOFTAdapter (in GensynTokenV2)
+ * 1. Deploy `BridgedGensynToken`
+ * 2. Later, deploy `MintBurnOFTAdapter` (with `BridgedGensynToken` as `token` and `minterBurner`)
+ * 3. Grant `MINTER_ROLE` and `BURNER_ROLE` to `MintBurnOFTAdapter` (in `BridgedGensynToken`)
  */
-contract GensynTokenV2 is GensynToken, IMintableBurnable {
+contract BridgedGensynToken is GensynToken, IMintableBurnable {
     /// @notice Role allowed to mint tokens to any address
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
     /// @notice Role allowed to burn tokens from any address
     bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
 
-    /// @notice Implementation initializer for V2.
+    /// @notice Burns the INITIAL_SUPPLY minted during `initialize()`, so that the total supply starts at 0.
     /// @dev Meant to be called right after `initialize()`.
-    /// @dev Will burn the INITIAL_SUPPLY minted during `initialize()`, so that the total supply starts at 0.
-    function reinitializeV2(address _recipient) external reinitializer(2) {
+    function reinitialize(address _recipient) external reinitializer(2) {
         // Burn initial supply from recipient
         _burn(_recipient, INITIAL_SUPPLY);
 
