@@ -1,35 +1,44 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.30;
 
+// Inheritance
+import {Broadcaster} from "../src/utils/Utils.sol";
+
+// Contracts
+import {TimelockController} from "@openzeppelin/contracts/governance/TimelockController.sol";
+
+// Interfaces
+import {IAccessControl} from "@openzeppelin/contracts/access/IAccessControl.sol";
+
 contract TrialRun_Script is Broadcaster {
 
     // Same across both chains
-    address constant PORTO;
-    address constant ANTONIO_EOA;
+    address constant PORTO; // use some dummy address
+    address constant ANTONIO_EOA = 0x8601E191c5257e4ccCe7a36AAD0AD0bB1d5adB63;
 
     // Ethereum Mainnet
-    address constant BRIDGED_GENSYN_TOKEN_SAFE_ETHEREUM_MAINNET;
-    address constant BRIDGED_GENSYN_TOKEN_TIMELOCK_ETHEREUM_MAINNET;
-    address constant BRIDGED_GENSYN_TOKEN_ETHEREUM_MAINNET;
-    address constant BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER_ETHEREUM_MAINNET;
+    address constant BRIDGED_GENSYN_TOKEN_SAFE_ETHEREUM_MAINNET = 0x90442673dae1b1572a3D994A4D795c8977A97ECD;
+    address constant BRIDGED_GENSYN_TOKEN_TIMELOCK_ETHEREUM_MAINNET = 0x78541D1CE97f2F354582344f8319E4D7EF2037FF;
+    address constant BRIDGED_GENSYN_TOKEN_ETHEREUM_MAINNET = 0x4d7078DDd6cCFED2F85dB5B7D3Ff16828d378d48;
+    address constant BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER_ETHEREUM_MAINNET = 0x44A39B6b0F544F7f1b0624d312eccD995433A3e4;
     
     // Gensyn Mainnet
-    address constant GENSYN_TOKEN_SAFE_GENSYN_MAINNET;
-    address constant GENSYN_TOKEN_TIMELOCK_GENSYN_MAINNET;
-    address constant GENSYN_TOKEN_GENSYN_MAINNET;
-    address constant GENSYN_TOKEN_OFT_ADAPTER_GENSYN_MAINNET;
+    // address constant GENSYN_TOKEN_SAFE_GENSYN_MAINNET;
+    // address constant GENSYN_TOKEN_TIMELOCK_GENSYN_MAINNET;
+    // address constant GENSYN_TOKEN_GENSYN_MAINNET;
+    // address constant GENSYN_TOKEN_OFT_ADAPTER_GENSYN_MAINNET;
 
     // Tests
     function testEndToEndEthereumMainnet() external {
         _setupEthereumMainnet();
-        _skipTime();
+        vm.warp(block.timestamp + 7 days);
         _executeEthereumMainnet();
         _validateEthereumMainnet();
     }
 
     function testEndToEndGensynMainnet() external {
         _setupGensynMainnet();
-        _skipTime();
+        vm.warp(block.timestamp + 7 days);
         _executeGensynMainnet();
         _validateGensynMainnet();
     }
@@ -82,7 +91,7 @@ contract TrialRun_Script is Broadcaster {
                     BRIDGED_GENSYN_TOKEN_ETHEREUM_MAINNET.DEFAULT_ADMIN_ROLE(),
                     ANTONIO_EOA
                 )
-            );,
+            ),
             predecessor_: bytes32(0),
             salt_: bytes32(0),
             delay_: 7 days
@@ -110,7 +119,7 @@ contract TrialRun_Script is Broadcaster {
                     BRIDGED_GENSYN_TOKEN_ETHEREUM_MAINNET.DEFAULT_ADMIN_ROLE(),
                     ANTONIO_EOA
                 )
-            );,
+            ),
             predecessor_: bytes32(0),
             salt_: bytes32(0)
         });
@@ -123,36 +132,36 @@ contract TrialRun_Script is Broadcaster {
     // Gensyn Mainnet Helpers
     function _setupGensynMainnet() internal returns (TimelockController adapterTimelock) {
 
-        // 1. Deploy AdapterTimelock
-        adapterTimelock = new TimelockController({
-            minDelay: 7 days,
-            proposers: _buildSingletonArray(),
-            executors: _buildSingletonArray(address(0)), // allow anyone to execute
-            admin: address(0) // renounce admin role to prevent centralization
-        });
+        // // 1. Deploy AdapterTimelock
+        // adapterTimelock = new TimelockController({
+        //     minDelay: 7 days,
+        //     proposers: _buildSingletonArray(),
+        //     executors: _buildSingletonArray(address(0)), // allow anyone to execute
+        //     admin: address(0) // renounce admin role to prevent centralization
+        // });
 
-        // 2. Transfer OFTAdapter `owner` and `delegate` to the AdapterTimelock
-        GENSYN_TOKEN_OFT_ADAPTER_GENSYN_MAINNET.setDelegate({
-            delegate_: address(adapterTimelock)
-        });
-        GENSYN_TOKEN_OFT_ADAPTER_GENSYN_MAINNET.transferOwnership({
-            newOwner_: address(adapterTimelock)
-        });
+        // // 2. Transfer OFTAdapter `owner` and `delegate` to the AdapterTimelock
+        // GENSYN_TOKEN_OFT_ADAPTER_GENSYN_MAINNET.setDelegate({
+        //     delegate_: address(adapterTimelock)
+        // });
+        // GENSYN_TOKEN_OFT_ADAPTER_GENSYN_MAINNET.transferOwnership({
+        //     newOwner_: address(adapterTimelock)
+        // });
 
-        // 3. Schedule Proposal 1
-        GENSYN_TOKEN_TIMELOCK_GENSYN_MAINNET.scheduleBatch({
-            targets_: ,
-            values_: ,
-            calldatas_:
-                abi.encodeCall(
-                    GENSYN_TOKEN_OFT_ADAPTER_GENSYN_MAINNET.setBridgeOperational,
-                    (false)
-                )
-            ),
-            predecessor_: bytes32(0),
-            salt_: bytes32(0),
-            delay_: 7 days
-        });
+        // // 3. Schedule Proposal 1
+        // GENSYN_TOKEN_TIMELOCK_GENSYN_MAINNET.scheduleBatch({
+        //     targets_: ,
+        //     values_: ,
+        //     calldatas_:
+        //         abi.encodeCall(
+        //             GENSYN_TOKEN_OFT_ADAPTER_GENSYN_MAINNET.setBridgeOperational,
+        //             (false)
+        //         )
+        //     ),
+        //     predecessor_: bytes32(0),
+        //     salt_: bytes32(0),
+        //     delay_: 7 days
+        // });
     }
 
     function _executeGensynMainnet() internal {
@@ -205,7 +214,7 @@ contract TrialRun_Script is Broadcaster {
         values[3] = 0;
     }
 
-    function _ethereumMainnetProposal1Calldatas() internal pure returns (bytes[] calldatas) {
+    function _ethereumMainnetProposal1Calldatas() internal pure returns (bytes[] memory calldatas) {
 
         // Initialize targets
         calldatas = new bytes[](4);
