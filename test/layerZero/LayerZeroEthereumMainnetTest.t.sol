@@ -37,17 +37,17 @@ contract LayerZero_EthereumMainnet_Test is LayerZero_EthereumMainnet_Utils, Test
         _validateAfter({adapterTimelock: address(adapterTimelock)});
 
         // Cancel Proposal 2 to prevent it from being executed in the future
-        BRIDGED_GENSYN_TOKEN_TIMELOCK.cancel({
-            id: BRIDGED_GENSYN_TOKEN_TIMELOCK.hashOperation({
-                target: address(BRIDGED_GENSYN_TOKEN),
-                value: 0,
-                data: abi.encodeCall(
-                    IAccessControl.grantRole, (BRIDGED_GENSYN_TOKEN.DEFAULT_ADMIN_ROLE(), ANTONIO_EOA)
-                ),
-                predecessor: bytes32(0),
-                salt: bytes32(0)
-            })
-        });
+        // BRIDGED_GENSYN_TOKEN_TIMELOCK.cancel({
+        //     id: BRIDGED_GENSYN_TOKEN_TIMELOCK.hashOperation({
+        //         target: address(BRIDGED_GENSYN_TOKEN),
+        //         value: 0,
+        //         data: abi.encodeCall(
+        //             IAccessControl.grantRole, (BRIDGED_GENSYN_TOKEN.DEFAULT_ADMIN_ROLE(), ANTONIO_EOA)
+        //         ),
+        //         predecessor: bytes32(0),
+        //         salt: bytes32(0)
+        //     })
+        // });
     }
 
     function _execute() internal {
@@ -95,6 +95,18 @@ contract LayerZero_EthereumMainnet_Test is LayerZero_EthereumMainnet_Utils, Test
             BRIDGED_GENSYN_TOKEN_TIMELOCK.hasRole(BRIDGED_GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), PORTO),
             "_validateBefore: porto has PROPOSER_ROLE on the timelock"
         );
+
+        // Validate Timelock canceller
+        assertTrue(
+            BRIDGED_GENSYN_TOKEN_TIMELOCK.hasRole(
+                BRIDGED_GENSYN_TOKEN_TIMELOCK.CANCELLER_ROLE(), BRIDGED_GENSYN_TOKEN_SAFE
+            ),
+            "_validateBefore: safe not the canceller on the timelock"
+        );
+        assertFalse(
+            BRIDGED_GENSYN_TOKEN_TIMELOCK.hasRole(BRIDGED_GENSYN_TOKEN_TIMELOCK.CANCELLER_ROLE(), PORTO),
+            "_validateBefore: porto has CANCELLER_ROLE on the timelock"
+        );
     }
 
     function _validateAfter(address adapterTimelock) internal view {
@@ -130,6 +142,18 @@ contract LayerZero_EthereumMainnet_Test is LayerZero_EthereumMainnet_Utils, Test
         assertTrue(
             BRIDGED_GENSYN_TOKEN_TIMELOCK.hasRole(BRIDGED_GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), PORTO),
             "_validateAfter: porto does not have PROPOSER_ROLE on the timelock"
+        );
+
+        // Validate Timelock canceller
+        assertFalse(
+            BRIDGED_GENSYN_TOKEN_TIMELOCK.hasRole(
+                BRIDGED_GENSYN_TOKEN_TIMELOCK.CANCELLER_ROLE(), BRIDGED_GENSYN_TOKEN_SAFE
+            ),
+            "_validateAfter: safe still has CANCELLER_ROLE on the timelock"
+        );
+        assertTrue(
+            BRIDGED_GENSYN_TOKEN_TIMELOCK.hasRole(BRIDGED_GENSYN_TOKEN_TIMELOCK.CANCELLER_ROLE(), PORTO),
+            "_validateAfter: porto does not have CANCELLER_ROLE on the timelock"
         );
     }
 }

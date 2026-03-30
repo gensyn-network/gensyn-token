@@ -54,29 +54,38 @@ contract LayerZero_GensynMainnet_Utils is LayerZero_SharedUtils {
 
     function proposal1Targets() public pure returns (address[] memory targets) {
         // Initialize targets
-        targets = new address[](2);
+        targets = new address[](4);
 
         // Build targets
         targets[0] = address(GENSYN_TOKEN_TIMELOCK);
         targets[1] = address(GENSYN_TOKEN_TIMELOCK);
+        targets[2] = address(GENSYN_TOKEN_TIMELOCK);
+        targets[3] = address(GENSYN_TOKEN_TIMELOCK);
     }
 
     function proposal1Values() public pure returns (uint256[] memory values) {
         // Initialize values
-        values = new uint256[](2);
+        values = new uint256[](4);
 
         // Build values
         values[0] = 0;
         values[1] = 0;
+        values[2] = 0;
+        values[3] = 0;
     }
 
     function proposal1Calldatas() public view returns (bytes[] memory calldatas) {
         // Initialize targets
-        calldatas = new bytes[](2);
+        calldatas = new bytes[](4);
 
-        // Grant PROPOSER_ROLE to PORTO and revoke PROPOSER_ROLE from the GENSYN_TOKEN_SAFE
+        // Grant PROPOSER_ROLE and CANCELLER_ROLE to PORTO
         calldatas[0] = abi.encodeCall(IAccessControl.grantRole, (GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), PORTO));
-        calldatas[1] =
+        calldatas[1] = abi.encodeCall(IAccessControl.grantRole, (GENSYN_TOKEN_TIMELOCK.CANCELLER_ROLE(), PORTO));
+
+        // Revoke PROPOSER_ROLE and CANCELLER_ROLE from the GENSYN_TOKEN_SAFE
+        calldatas[2] =
             abi.encodeCall(IAccessControl.revokeRole, (GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), GENSYN_TOKEN_SAFE));
+        calldatas[3] =
+            abi.encodeCall(IAccessControl.revokeRole, (GENSYN_TOKEN_TIMELOCK.CANCELLER_ROLE(), GENSYN_TOKEN_SAFE));
     }
 }

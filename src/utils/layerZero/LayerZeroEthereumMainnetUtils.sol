@@ -64,29 +64,33 @@ contract LayerZero_EthereumMainnet_Utils is LayerZero_SharedUtils {
 
     function proposal1Targets() public pure returns (address[] memory targets) {
         // Initialize targets
-        targets = new address[](4);
+        targets = new address[](6);
 
         // Build targets
         targets[0] = address(BRIDGED_GENSYN_TOKEN);
         targets[1] = address(BRIDGED_GENSYN_TOKEN);
         targets[2] = address(BRIDGED_GENSYN_TOKEN_TIMELOCK);
         targets[3] = address(BRIDGED_GENSYN_TOKEN_TIMELOCK);
+        targets[4] = address(BRIDGED_GENSYN_TOKEN_TIMELOCK);
+        targets[5] = address(BRIDGED_GENSYN_TOKEN_TIMELOCK);
     }
 
     function proposal1Values() public pure returns (uint256[] memory values) {
         // Initialize values
-        values = new uint256[](4);
+        values = new uint256[](6);
 
         // Build values
         values[0] = 0;
         values[1] = 0;
         values[2] = 0;
         values[3] = 0;
+        values[4] = 0;
+        values[5] = 0;
     }
 
     function proposal1Calldatas() public view returns (bytes[] memory calldatas) {
         // Initialize targets
-        calldatas = new bytes[](4);
+        calldatas = new bytes[](6);
 
         // Grant MINTER_ROLE and BURNER_ROLE to the BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER
         calldatas[0] = abi.encodeCall(
@@ -96,10 +100,16 @@ contract LayerZero_EthereumMainnet_Utils is LayerZero_SharedUtils {
             IAccessControl.grantRole, (BRIDGED_GENSYN_TOKEN.BURNER_ROLE(), BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER)
         );
 
-        // Grant PROPOSER_ROLE to PORTO and revoke PROPOSER_ROLE from the BRIDGED_GENSYN_TOKEN_SAFE
+        // Grant PROPOSER_ROLE and CANCELLER_ROLE to PORTO
         calldatas[2] = abi.encodeCall(IAccessControl.grantRole, (BRIDGED_GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), PORTO));
-        calldatas[3] = abi.encodeCall(
+        calldatas[3] = abi.encodeCall(IAccessControl.grantRole, (BRIDGED_GENSYN_TOKEN_TIMELOCK.CANCELLER_ROLE(), PORTO));
+
+        // Revoke PROPOSER_ROLE and CANCELLER_ROLE from the BRIDGED_GENSYN_TOKEN_SAFE
+        calldatas[4] = abi.encodeCall(
             IAccessControl.revokeRole, (BRIDGED_GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), BRIDGED_GENSYN_TOKEN_SAFE)
+        );
+        calldatas[5] = abi.encodeCall(
+            IAccessControl.revokeRole, (BRIDGED_GENSYN_TOKEN_TIMELOCK.CANCELLER_ROLE(), BRIDGED_GENSYN_TOKEN_SAFE)
         );
     }
 }

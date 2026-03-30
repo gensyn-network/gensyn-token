@@ -65,6 +65,16 @@ contract LayerZero_GensynMainnet_Test is LayerZero_GensynMainnet_Utils, Test {
             GENSYN_TOKEN_TIMELOCK.hasRole(GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), PORTO),
             "_validateBefore: porto has PROPOSER_ROLE on the timelock"
         );
+
+        // Validate Timelock canceller
+        assertTrue(
+            GENSYN_TOKEN_TIMELOCK.hasRole(GENSYN_TOKEN_TIMELOCK.CANCELLER_ROLE(), GENSYN_TOKEN_SAFE),
+            "_validateBefore: safe not the canceller on the timelock"
+        );
+        assertFalse(
+            GENSYN_TOKEN_TIMELOCK.hasRole(GENSYN_TOKEN_TIMELOCK.CANCELLER_ROLE(), PORTO),
+            "_validateBefore: porto has CANCELLER_ROLE on the timelock"
+        );
     }
 
     function _validateAfter(address adapterTimelock) internal view {
@@ -84,6 +94,16 @@ contract LayerZero_GensynMainnet_Test is LayerZero_GensynMainnet_Utils, Test {
         assertTrue(
             GENSYN_TOKEN_TIMELOCK.hasRole(GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), PORTO),
             "_validateAfter: porto does not have PROPOSER_ROLE on the timelock"
+        );
+
+        // Validate Timelock canceller
+        assertFalse(
+            GENSYN_TOKEN_TIMELOCK.hasRole(GENSYN_TOKEN_TIMELOCK.CANCELLER_ROLE(), GENSYN_TOKEN_SAFE),
+            "_validateAfter: safe still has CANCELLER_ROLE on the timelock"
+        );
+        assertTrue(
+            GENSYN_TOKEN_TIMELOCK.hasRole(GENSYN_TOKEN_TIMELOCK.CANCELLER_ROLE(), PORTO),
+            "_validateAfter: porto does not have CANCELLER_ROLE on the timelock"
         );
     }
 }
