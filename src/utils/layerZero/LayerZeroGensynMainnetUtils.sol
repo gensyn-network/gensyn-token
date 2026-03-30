@@ -24,6 +24,9 @@ contract LayerZero_GensynMainnet_Utils is LayerZero_SharedUtils {
 
     // Gensyn Mainnet Helpers
     function _deployAdapterTimelockAndMoveAdapterPermissions() internal returns (TimelockController adapterTimelock) {
+        // Ensure script is being run on Ethereum Mainnet
+        require(block.chainid == 685_689, "Chain ID not Gensyn Mainnet");
+
         // 1. Deploy AdapterTimelock
         adapterTimelock = new TimelockController({
             minDelay: 7 days,
