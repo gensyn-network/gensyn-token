@@ -56,8 +56,12 @@ contract LayerZero_GensynMainnet_Test is LayerZero_GensynMainnet_Utils, Test {
     }
 
     function _validateBefore() internal view {
-        // Validate adapter delegate & owner
-        // assertEq(GENSYN_TOKEN_OFT_ADAPTER.delegate(), ANTONIO_EOA);
+        // Validate adapter delegate
+        address endpoint = IOAppCoreLike(address(GENSYN_TOKEN_OFT_ADAPTER)).endpoint();
+        address delegate = ILayerZeroEndpointV2Like(endpoint).delegates(address(GENSYN_TOKEN_OFT_ADAPTER));
+        assertEq(delegate, ANTONIO_EOA);
+
+        // Validate adapter owner
         assertEq(
             Ownable(GENSYN_TOKEN_OFT_ADAPTER).owner(),
             ANTONIO_EOA,

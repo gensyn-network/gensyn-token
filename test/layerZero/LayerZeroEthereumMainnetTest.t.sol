@@ -44,18 +44,19 @@ contract LayerZero_EthereumMainnet_Test is LayerZero_EthereumMainnet_Utils, Test
         // Validate after
         _validateAfter({adapterTimelock: address(adapterTimelock)});
 
-        // Cancel Proposal 2 to prevent it from being executed in the future
-        // BRIDGED_GENSYN_TOKEN_TIMELOCK.cancel({
-        //     id: BRIDGED_GENSYN_TOKEN_TIMELOCK.hashOperation({
-        //         target: address(BRIDGED_GENSYN_TOKEN),
-        //         value: 0,
-        //         data: abi.encodeCall(
-        //             IAccessControl.grantRole, (BRIDGED_GENSYN_TOKEN.DEFAULT_ADMIN_ROLE(), ANTONIO_EOA)
-        //         ),
-        //         predecessor: bytes32(0),
-        //         salt: bytes32(0)
-        //     })
-        // });
+        // Cancel Proposal 2 (from PORTO)
+        _useNewSender(PORTO);
+        BRIDGED_GENSYN_TOKEN_TIMELOCK.cancel({
+            id: BRIDGED_GENSYN_TOKEN_TIMELOCK.hashOperation({
+                target: address(BRIDGED_GENSYN_TOKEN),
+                value: 0,
+                data: abi.encodeCall(
+                    IAccessControl.grantRole, (BRIDGED_GENSYN_TOKEN.DEFAULT_ADMIN_ROLE(), ANTONIO_EOA)
+                ),
+                predecessor: bytes32(0),
+                salt: bytes32(0)
+            })
+        });
     }
 
     function _execute() internal {

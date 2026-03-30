@@ -52,6 +52,7 @@ contract LayerZero_EthereumMainnet_Utils is LayerZero_SharedUtils {
         });
 
         // 4. Schedule Proposal 2
+        // Note: This is just in case we make a mistake, we don't have to wait another 7 days.
         BRIDGED_GENSYN_TOKEN_TIMELOCK.schedule({
             target: address(BRIDGED_GENSYN_TOKEN),
             value: 0,
