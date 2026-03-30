@@ -2,7 +2,7 @@
 pragma solidity 0.8.30;
 
 // Inheritance
-import {CommonBase} from "forge-std/Base.sol";
+import {LayerZero_SharedUtils} from "./LayerZeroSharedUtils.sol";
 
 // Contracts
 import {TimelockController} from "@openzeppelin/contracts/governance/TimelockController.sol";
@@ -14,11 +14,7 @@ interface IOAppCore {
     function setDelegate(address _delegate) external;
 }
 
-contract LayerZero_EthereumMainnet_Utils is CommonBase {
-    // Same across both chains
-    address constant PORTO = 0x1234567890AbcdEF1234567890aBcdef12345678; // dummy address
-    address constant ANTONIO_EOA = 0x8601E191c5257e4ccCe7a36AAD0AD0bB1d5adB63;
-
+contract LayerZero_EthereumMainnet_Utils is LayerZero_SharedUtils {
     // Ethereum Mainnet
     address constant BRIDGED_GENSYN_TOKEN_SAFE = 0x90442673dae1b1572a3D994A4D795c8977A97ECD;
     TimelockController constant BRIDGED_GENSYN_TOKEN_TIMELOCK =
@@ -107,15 +103,5 @@ contract LayerZero_EthereumMainnet_Utils is CommonBase {
         calldatas[3] = abi.encodeCall(
             IAccessControl.revokeRole, (BRIDGED_GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), BRIDGED_GENSYN_TOKEN_SAFE)
         );
-    }
-
-    function _buildSingletonArray(address element) internal pure returns (address[] memory array) {
-        array = new address[](1);
-        array[0] = element;
-    }
-
-    function _useNewSender(address sender) internal {
-        vm.stopPrank();
-        vm.startPrank(sender);
     }
 }
