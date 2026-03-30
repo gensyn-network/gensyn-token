@@ -11,11 +11,10 @@ import {TimelockController} from "@openzeppelin/contracts/governance/TimelockCon
 // import {IAccessControl} from "@openzeppelin/contracts/access/IAccessControl.sol";
 
 contract TrialRun_Script is Broadcaster {
-
     // Same across both chains
     address constant PORTO = 0x1234567890AbcdEF1234567890aBcdef12345678; // dummy address
     address constant ANTONIO_EOA = 0x8601E191c5257e4ccCe7a36AAD0AD0bB1d5adB63;
-    
+
     // Gensyn Mainnet
     // address constant GENSYN_TOKEN_SAFE;
     // address constant GENSYN_TOKEN_TIMELOCK;
@@ -29,7 +28,7 @@ contract TrialRun_Script is Broadcaster {
         _execute();
         _validate();
     }
-    
+
     // Scripts
     function run() external broadcast {
         _setup();
@@ -87,9 +86,7 @@ contract TrialRun_Script is Broadcaster {
         // });
     }
 
-    function _validate() internal {
-
-    }
+    function _validate() internal {}
 
     function _buildSingletonArray(address element) internal pure returns (address[] memory array) {
         array = new address[](1);
