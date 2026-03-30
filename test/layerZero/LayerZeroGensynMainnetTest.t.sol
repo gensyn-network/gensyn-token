@@ -9,6 +9,14 @@ import {Test} from "forge-std/Test.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {TimelockController} from "@openzeppelin/contracts/governance/TimelockController.sol";
 
+interface IOAppCoreLike {
+    function endpoint() external view returns (address);
+}
+
+interface ILayerZeroEndpointV2Like {
+    function delegates(address oapp) external view returns (address);
+}
+
 contract LayerZero_GensynMainnet_Test is LayerZero_GensynMainnet_Utils, Test {
     // Tests
     function test_LayerZero_GensynMainnet() external {
@@ -78,8 +86,12 @@ contract LayerZero_GensynMainnet_Test is LayerZero_GensynMainnet_Utils, Test {
     }
 
     function _validateAfter(address adapterTimelock) internal view {
-        // Validate adapter delegate & owner
-        // assertEq(GENSYN_TOKEN_OFT_ADAPTER.delegate(), adapterTimelock);
+        // Validate adapter delegate
+        address endpoint = IOAppCoreLike(address(GENSYN_TOKEN_OFT_ADAPTER)).endpoint();
+        address delegate = ILayerZeroEndpointV2Like(endpoint).delegates(address(GENSYN_TOKEN_OFT_ADAPTER));
+        assertEq(delegate, adapterTimelock);
+
+        // Validate adapter owner
         assertEq(
             Ownable(GENSYN_TOKEN_OFT_ADAPTER).owner(),
             adapterTimelock,

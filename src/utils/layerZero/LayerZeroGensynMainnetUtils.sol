@@ -10,7 +10,7 @@ import {GensynToken} from "src/GensynToken.sol";
 import {IAccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
-interface IOAppCore {
+interface IOAppCoreLike {
     function setDelegate(address _delegate) external;
 }
 
@@ -36,7 +36,7 @@ contract LayerZero_GensynMainnet_Utils is LayerZero_SharedUtils {
         });
 
         // 2. Transfer OFTAdapter `owner` and `delegate` to the AdapterTimelock
-        IOAppCore(GENSYN_TOKEN_OFT_ADAPTER).setDelegate({_delegate: address(adapterTimelock)});
+        IOAppCoreLike(GENSYN_TOKEN_OFT_ADAPTER).setDelegate({_delegate: address(adapterTimelock)});
         Ownable(GENSYN_TOKEN_OFT_ADAPTER).transferOwnership({newOwner: address(adapterTimelock)});
     }
 

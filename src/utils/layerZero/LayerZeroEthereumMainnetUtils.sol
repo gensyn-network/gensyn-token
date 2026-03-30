@@ -10,7 +10,7 @@ import {BridgedGensynToken} from "src/BridgedGensynToken.sol";
 import {IAccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
-interface IOAppCore {
+interface IOAppCoreLike {
     function setDelegate(address _delegate) external;
 }
 
@@ -36,7 +36,7 @@ contract LayerZero_EthereumMainnet_Utils is LayerZero_SharedUtils {
         });
 
         // 2. Transfer BridgedGensynTokenMintBurnOFTAdapter `owner` and `delegate` to the AdapterTimelock
-        IOAppCore(BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER).setDelegate({_delegate: address(adapterTimelock)});
+        IOAppCoreLike(BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER).setDelegate({_delegate: address(adapterTimelock)});
         Ownable(BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER).transferOwnership({newOwner: address(adapterTimelock)});
     }
 

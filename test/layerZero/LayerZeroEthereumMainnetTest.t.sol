@@ -10,6 +10,14 @@ import {IAccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {TimelockController} from "@openzeppelin/contracts/governance/TimelockController.sol";
 
+interface IOAppCoreLike {
+    function endpoint() external view returns (address);
+}
+
+interface ILayerZeroEndpointV2Like {
+    function delegates(address oapp) external view returns (address);
+}
+
 contract LayerZero_EthereumMainnet_Test is LayerZero_EthereumMainnet_Utils, Test {
     // Tests
     function test_LayerZero_EthereumMainnet() external {
@@ -110,8 +118,13 @@ contract LayerZero_EthereumMainnet_Test is LayerZero_EthereumMainnet_Utils, Test
     }
 
     function _validateAfter(address adapterTimelock) internal view {
-        // Validate adapter delegate & owner
-        // assertEq(BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER.delegate(), adapterTimelock);
+        // Validate adapter delegate
+        address endpoint = IOAppCoreLike(address(BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER)).endpoint();
+        address delegate =
+            ILayerZeroEndpointV2Like(endpoint).delegates(address(BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER));
+        assertEq(delegate, adapterTimelock);
+
+        // Validate adapter owner
         assertEq(
             Ownable(BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER).owner(),
             adapterTimelock,
