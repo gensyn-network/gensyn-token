@@ -7,6 +7,8 @@ import {Test} from "forge-std/Test.sol";
 
 // Interfaces
 import {IAccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {TimelockController} from "@openzeppelin/contracts/governance/TimelockController.sol";
 
 contract LayerZero_EthereumMainnet_Test is LayerZero_EthereumMainnet_Utils, Test {
     // Tests
@@ -17,8 +19,11 @@ contract LayerZero_EthereumMainnet_Test is LayerZero_EthereumMainnet_Utils, Test
         // Start Prank
         vm.startPrank(ANTONIO_EOA);
 
+        // Validate before
+        _validateBefore();
+
         // Setup
-        _setup({delegate: ANTONIO_EOA, scheduler: BRIDGED_GENSYN_TOKEN_SAFE});
+        TimelockController adapterTimelock = _setup({delegate: ANTONIO_EOA, scheduler: BRIDGED_GENSYN_TOKEN_SAFE});
 
         // Skip Timelock's minimum delay
         skip(BRIDGED_GENSYN_TOKEN_TIMELOCK.getMinDelay());
@@ -26,8 +31,8 @@ contract LayerZero_EthereumMainnet_Test is LayerZero_EthereumMainnet_Utils, Test
         // Execute
         _execute();
 
-        // Validate
-        _validate();
+        // Validate after
+        _validateAfter({adapterTimelock: address(adapterTimelock)});
     }
 
     function _execute() internal {
@@ -54,5 +59,49 @@ contract LayerZero_EthereumMainnet_Test is LayerZero_EthereumMainnet_Utils, Test
         });
     }
 
-    function _validate() internal {}
+    function _validateBefore() internal {
+
+        // Validate adapter delegate & owner
+        assertEq(BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER.delegate(), ANTONIO_EOA);
+        assertEq(Ownable(BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER).owner(), ANTONIO_EOA);
+
+        // Validate adapter token roles
+        assertFalse(
+            BRIDGED_GENSYN_TOKEN.hasRole(BRIDGED_GENSYN_TOKEN.MINTER_ROLE(), BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER)
+        );
+        assertFalse(
+            BRIDGED_GENSYN_TOKEN.hasRole(BRIDGED_GENSYN_TOKEN.BURNER_ROLE(), BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER)
+        );
+
+        // Validate Timelock proposer
+        assertTrue(
+            BRIDGED_GENSYN_TOKEN_TIMELOCK.hasRole(
+                BRIDGED_GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), BRIDGED_GENSYN_TOKEN_SAFE
+            )
+        );
+        assertFalse(BRIDGED_GENSYN_TOKEN_TIMELOCK.hasRole(BRIDGED_GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), PORTO));
+    }
+
+    function _validateAfter(address adapterTimelock) internal {
+
+        // Validate adapter delegate & owner
+        assertEq(BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER.delegate(), adapterTimelock);
+        assertEq(Ownable(BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER).owner(), adapterTimelock);
+
+        // Validate adapter token roles
+        assertTrue(
+            BRIDGED_GENSYN_TOKEN.hasRole(BRIDGED_GENSYN_TOKEN.MINTER_ROLE(), BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER)
+        );
+        assertTrue(
+            BRIDGED_GENSYN_TOKEN.hasRole(BRIDGED_GENSYN_TOKEN.BURNER_ROLE(), BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER)
+        );
+
+        // Validate Timelock proposer
+        assertFalse(
+            BRIDGED_GENSYN_TOKEN_TIMELOCK.hasRole(
+                BRIDGED_GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), BRIDGED_GENSYN_TOKEN_SAFE
+            )
+        );
+        assertTrue(BRIDGED_GENSYN_TOKEN_TIMELOCK.hasRole(BRIDGED_GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), PORTO));
+    }
 }
