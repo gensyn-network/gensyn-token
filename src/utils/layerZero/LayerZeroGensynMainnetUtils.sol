@@ -48,7 +48,7 @@ contract LayerZero_GensynMainnet_Utils is LayerZero_SharedUtils {
             payloads: proposal1Calldatas(),
             predecessor: bytes32(0),
             salt: bytes32(0),
-            delay: 7 days
+            delay: GENSYN_TOKEN_TIMELOCK.getMinDelay()
         });
     }
 
