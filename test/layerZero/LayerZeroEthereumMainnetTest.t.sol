@@ -20,7 +20,8 @@ contract LayerZero_EthereumMainnet_Test is LayerZero_EthereumMainnet_Utils, Test
         _validateBefore();
 
         // Setup
-        TimelockController adapterTimelock = _setup({delegate: ANTONIO_EOA, scheduler: BRIDGED_GENSYN_TOKEN_SAFE});
+        TimelockController adapterTimelock = _part1({delegate: ANTONIO_EOA});
+        _part2({scheduler: BRIDGED_GENSYN_TOKEN_SAFE});
 
         // Skip Timelock's minimum delay
         skip(BRIDGED_GENSYN_TOKEN_TIMELOCK.getMinDelay());
@@ -57,47 +58,74 @@ contract LayerZero_EthereumMainnet_Test is LayerZero_EthereumMainnet_Utils, Test
     }
 
     function _validateBefore() internal view {
-
         // Validate adapter delegate & owner
         // assertEq(BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER.delegate(), ANTONIO_EOA);
-        assertEq(Ownable(BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER).owner(), ANTONIO_EOA, "_validateBefore: ANTONIO_EOA not the owner of the adapter");
+        assertEq(
+            Ownable(BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER).owner(),
+            ANTONIO_EOA,
+            "_validateBefore: ANTONIO_EOA not the owner of the adapter"
+        );
 
         // Validate adapter token roles
         assertFalse(
-            BRIDGED_GENSYN_TOKEN.hasRole(BRIDGED_GENSYN_TOKEN.MINTER_ROLE(), BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER), "_validateBefore: adapter has MINTER_ROLE on the token");
+            BRIDGED_GENSYN_TOKEN.hasRole(
+                BRIDGED_GENSYN_TOKEN.MINTER_ROLE(), BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER
+            ),
+            "_validateBefore: adapter has MINTER_ROLE on the token"
+        );
         assertFalse(
-            BRIDGED_GENSYN_TOKEN.hasRole(BRIDGED_GENSYN_TOKEN.BURNER_ROLE(), BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER), "_validateBefore: adapter has BURNER_ROLE on the token"
+            BRIDGED_GENSYN_TOKEN.hasRole(
+                BRIDGED_GENSYN_TOKEN.BURNER_ROLE(), BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER
+            ),
+            "_validateBefore: adapter has BURNER_ROLE on the token"
         );
 
         // Validate Timelock proposer
         assertTrue(
             BRIDGED_GENSYN_TOKEN_TIMELOCK.hasRole(
                 BRIDGED_GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), BRIDGED_GENSYN_TOKEN_SAFE
-            ), "_validateBefore: safe not the proposer on the timelock"
+            ),
+            "_validateBefore: safe not the proposer on the timelock"
         );
-        assertFalse(BRIDGED_GENSYN_TOKEN_TIMELOCK.hasRole(BRIDGED_GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), PORTO), "_validateBefore: porto has PROPOSER_ROLE on the timelock");
+        assertFalse(
+            BRIDGED_GENSYN_TOKEN_TIMELOCK.hasRole(BRIDGED_GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), PORTO),
+            "_validateBefore: porto has PROPOSER_ROLE on the timelock"
+        );
     }
 
     function _validateAfter(address adapterTimelock) internal view {
-
         // Validate adapter delegate & owner
         // assertEq(BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER.delegate(), adapterTimelock);
-        assertEq(Ownable(BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER).owner(), adapterTimelock, "_validateAfter: adapterTimelock not the owner of the adapter" );
+        assertEq(
+            Ownable(BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER).owner(),
+            adapterTimelock,
+            "_validateAfter: adapterTimelock not the owner of the adapter"
+        );
 
         // Validate adapter token roles
         assertTrue(
-            BRIDGED_GENSYN_TOKEN.hasRole(BRIDGED_GENSYN_TOKEN.MINTER_ROLE(), BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER), "_validateAfter: adapter does not have MINTER_ROLE on the token"
+            BRIDGED_GENSYN_TOKEN.hasRole(
+                BRIDGED_GENSYN_TOKEN.MINTER_ROLE(), BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER
+            ),
+            "_validateAfter: adapter does not have MINTER_ROLE on the token"
         );
         assertTrue(
-            BRIDGED_GENSYN_TOKEN.hasRole(BRIDGED_GENSYN_TOKEN.BURNER_ROLE(), BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER), "_validateAfter: adapter does not have BURNER_ROLE on the token"
+            BRIDGED_GENSYN_TOKEN.hasRole(
+                BRIDGED_GENSYN_TOKEN.BURNER_ROLE(), BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER
+            ),
+            "_validateAfter: adapter does not have BURNER_ROLE on the token"
         );
 
         // Validate Timelock proposer
         assertFalse(
             BRIDGED_GENSYN_TOKEN_TIMELOCK.hasRole(
                 BRIDGED_GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), BRIDGED_GENSYN_TOKEN_SAFE
-            ), "_validateAfter: safe still has PROPOSER_ROLE on the timelock"
+            ),
+            "_validateAfter: safe still has PROPOSER_ROLE on the timelock"
         );
-        assertTrue(BRIDGED_GENSYN_TOKEN_TIMELOCK.hasRole(BRIDGED_GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), PORTO), "_validateAfter: porto does not have PROPOSER_ROLE on the timelock");
+        assertTrue(
+            BRIDGED_GENSYN_TOKEN_TIMELOCK.hasRole(BRIDGED_GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), PORTO),
+            "_validateAfter: porto does not have PROPOSER_ROLE on the timelock"
+        );
     }
 }

@@ -23,7 +23,7 @@ contract LayerZero_EthereumMainnet_Utils is LayerZero_SharedUtils {
     address constant BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER = 0x44A39B6b0F544F7f1b0624d312eccD995433A3e4;
 
     // Ethereum Mainnet Helpers
-    function _setup(address delegate, address scheduler) internal returns (TimelockController adapterTimelock) {
+    function _part1(address delegate) internal returns (TimelockController adapterTimelock) {
         // Ensure script is being run on Ethereum Mainnet
         require(block.chainid == 1, "Chain ID not Ethereum Mainnet");
 
@@ -41,7 +41,9 @@ contract LayerZero_EthereumMainnet_Utils is LayerZero_SharedUtils {
         // 2. Transfer BridgedGensynTokenMintBurnOFTAdapter `owner` and `delegate` to the AdapterTimelock
         IOAppCore(BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER).setDelegate({_delegate: address(adapterTimelock)});
         Ownable(BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER).transferOwnership({newOwner: address(adapterTimelock)});
+    }
 
+    function _part2(address scheduler) internal {
         // Switch to scheduler
         _useNewSender(scheduler);
 

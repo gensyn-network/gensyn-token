@@ -7,6 +7,6 @@ import {Broadcaster} from "../src/utils/Utils.sol";
 
 contract LayerZero_EthereumMainnet_Script is LayerZero_EthereumMainnet_Utils, Broadcaster {
     function run() external broadcast {
-        _setup({delegate: ANTONIO_EOA, scheduler: BRIDGED_GENSYN_TOKEN_SAFE});
+        _part1({delegate: ANTONIO_EOA});
     }
 }
