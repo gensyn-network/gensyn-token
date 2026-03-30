@@ -29,6 +29,19 @@ contract LayerZero_EthereumMainnet_Test is LayerZero_EthereumMainnet_Utils, Test
         // Execute
         _execute();
 
+        // Cancel Proposal 2 to prevent it from being executed in the future
+        BRIDGED_GENSYN_TOKEN_TIMELOCK.cancel({
+            id: BRIDGED_GENSYN_TOKEN_TIMELOCK.hashOperation({
+                target: address(BRIDGED_GENSYN_TOKEN),
+                value: 0,
+                data: abi.encodeCall(
+                    IAccessControl.grantRole, (BRIDGED_GENSYN_TOKEN.DEFAULT_ADMIN_ROLE(), ANTONIO_EOA)
+                ),
+                predecessor: bytes32(0),
+                salt: bytes32(0)
+            })
+        });
+
         // Validate after
         _validateAfter({adapterTimelock: address(adapterTimelock)});
     }
@@ -41,19 +54,6 @@ contract LayerZero_EthereumMainnet_Test is LayerZero_EthereumMainnet_Utils, Test
             payloads: _proposal1Calldatas(),
             predecessor: bytes32(0),
             salt: bytes32(0)
-        });
-
-        // 2. Cancel Proposal 2
-        BRIDGED_GENSYN_TOKEN_TIMELOCK.cancel({
-            id: BRIDGED_GENSYN_TOKEN_TIMELOCK.hashOperation({
-                target: address(BRIDGED_GENSYN_TOKEN),
-                value: 0,
-                data: abi.encodeCall(
-                    IAccessControl.grantRole, (BRIDGED_GENSYN_TOKEN.DEFAULT_ADMIN_ROLE(), ANTONIO_EOA)
-                ),
-                predecessor: bytes32(0),
-                salt: bytes32(0)
-            })
         });
     }
 
