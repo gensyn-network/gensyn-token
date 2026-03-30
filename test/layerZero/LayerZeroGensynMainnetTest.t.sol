@@ -21,8 +21,13 @@ contract LayerZero_GensynMainnet_Test is LayerZero_GensynMainnet_Utils, Test {
         // Start Prank
         vm.startPrank(ANTONIO_EOA);
 
-        // Setup
-        TimelockController adapterTimelock = _setup({delegate: ANTONIO_EOA, proposer: GENSYN_TOKEN_SAFE});
+        // Deploy Adapter Timelock and Move Adapter Permissions (from ANTONIO_EOA)
+        _useNewSender(ANTONIO_EOA);
+        TimelockController adapterTimelock = _deployAdapterTimelockAndMoveAdapterPermissions();
+
+        // Schedule Proposal 1 (from GENSYN_TOKEN_SAFE)
+        _useNewSender(GENSYN_TOKEN_SAFE);
+        _scheduleProposal();
 
         // Skip Timelock's minimum delay
         skip(GENSYN_TOKEN_TIMELOCK.getMinDelay());
@@ -37,9 +42,9 @@ contract LayerZero_GensynMainnet_Test is LayerZero_GensynMainnet_Utils, Test {
     function _execute() internal {
         // Execute Proposal 1
         GENSYN_TOKEN_TIMELOCK.executeBatch({
-            targets: _proposal1Targets(),
-            values: _proposal1Values(),
-            payloads: _proposal1Calldatas(),
+            targets: proposal1Targets(),
+            values: proposal1Values(),
+            payloads: proposal1Calldatas(),
             predecessor: bytes32(0),
             salt: bytes32(0)
         });

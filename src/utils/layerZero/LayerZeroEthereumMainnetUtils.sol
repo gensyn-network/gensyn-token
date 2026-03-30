@@ -23,7 +23,7 @@ contract LayerZero_EthereumMainnet_Utils is LayerZero_SharedUtils {
     address constant BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER = 0x44A39B6b0F544F7f1b0624d312eccD995433A3e4;
 
     // Ethereum Mainnet Helpers
-    function _part1(address delegate) internal returns (TimelockController adapterTimelock) {
+    function _deployAdapterTimelockAndMoveAdapterPermissions() internal returns (TimelockController adapterTimelock) {
         // Ensure script is being run on Ethereum Mainnet
         require(block.chainid == 1, "Chain ID not Ethereum Mainnet");
 
@@ -35,23 +35,17 @@ contract LayerZero_EthereumMainnet_Utils is LayerZero_SharedUtils {
             admin: address(0) // renounce admin role to prevent centralization
         });
 
-        // Switch to delegate
-        _useNewSender(delegate);
-
         // 2. Transfer BridgedGensynTokenMintBurnOFTAdapter `owner` and `delegate` to the AdapterTimelock
         IOAppCore(BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER).setDelegate({_delegate: address(adapterTimelock)});
         Ownable(BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER).transferOwnership({newOwner: address(adapterTimelock)});
     }
 
-    function _part2(address scheduler) internal {
-        // Switch to scheduler
-        _useNewSender(scheduler);
-
+    function _scheduleProposals() internal {
         // 3. Schedule Proposal 1
         BRIDGED_GENSYN_TOKEN_TIMELOCK.scheduleBatch({
-            targets: _proposal1Targets(),
-            values: _proposal1Values(),
-            payloads: _proposal1Calldatas(),
+            targets: proposal1Targets(),
+            values: proposal1Values(),
+            payloads: proposal1Calldatas(),
             predecessor: bytes32(0),
             salt: bytes32(0),
             delay: 7 days
@@ -68,7 +62,7 @@ contract LayerZero_EthereumMainnet_Utils is LayerZero_SharedUtils {
         });
     }
 
-    function _proposal1Targets() internal pure returns (address[] memory targets) {
+    function proposal1Targets() public pure returns (address[] memory targets) {
         // Initialize targets
         targets = new address[](4);
 
@@ -79,7 +73,7 @@ contract LayerZero_EthereumMainnet_Utils is LayerZero_SharedUtils {
         targets[3] = address(BRIDGED_GENSYN_TOKEN_TIMELOCK);
     }
 
-    function _proposal1Values() internal pure returns (uint256[] memory values) {
+    function proposal1Values() public pure returns (uint256[] memory values) {
         // Initialize values
         values = new uint256[](4);
 
@@ -90,7 +84,7 @@ contract LayerZero_EthereumMainnet_Utils is LayerZero_SharedUtils {
         values[3] = 0;
     }
 
-    function _proposal1Calldatas() internal view returns (bytes[] memory calldatas) {
+    function proposal1Calldatas() public view returns (bytes[] memory calldatas) {
         // Initialize targets
         calldatas = new bytes[](4);
 

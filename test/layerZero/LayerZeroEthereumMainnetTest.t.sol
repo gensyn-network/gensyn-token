@@ -19,9 +19,13 @@ contract LayerZero_EthereumMainnet_Test is LayerZero_EthereumMainnet_Utils, Test
         // Validate before
         _validateBefore();
 
-        // Setup
-        TimelockController adapterTimelock = _part1({delegate: ANTONIO_EOA});
-        _part2({scheduler: BRIDGED_GENSYN_TOKEN_SAFE});
+        // Deploy Adapter Timelock and Move Adapter Permissions (from ANTONIO_EOA)
+        _useNewSender(ANTONIO_EOA);
+        TimelockController adapterTimelock = _deployAdapterTimelockAndMoveAdapterPermissions();
+
+        // Schedule Proposals (from BRIDGED_GENSYN_TOKEN_SAFE)
+        _useNewSender(BRIDGED_GENSYN_TOKEN_SAFE);
+        _scheduleProposals();
 
         // Skip Timelock's minimum delay
         skip(BRIDGED_GENSYN_TOKEN_TIMELOCK.getMinDelay());
@@ -49,9 +53,9 @@ contract LayerZero_EthereumMainnet_Test is LayerZero_EthereumMainnet_Utils, Test
     function _execute() internal {
         // 1. Execute Proposal 1
         BRIDGED_GENSYN_TOKEN_TIMELOCK.executeBatch({
-            targets: _proposal1Targets(),
-            values: _proposal1Values(),
-            payloads: _proposal1Calldatas(),
+            targets: proposal1Targets(),
+            values: proposal1Values(),
+            payloads: proposal1Calldatas(),
             predecessor: bytes32(0),
             salt: bytes32(0)
         });
