@@ -8,6 +8,6 @@ import {Broadcaster} from "../src/utils/Utils.sol";
 contract LayerZero_GensynMainnet_Script is LayerZero_GensynMainnet_Utils, Broadcaster {
     // Scripts
     function run() external broadcast {
-        _setup();
+        _setup({delegate: ANTONIO_EOA, proposer: GENSYN_TOKEN_SAFE});
     }
 }

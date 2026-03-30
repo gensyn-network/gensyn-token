@@ -7,6 +7,12 @@ import {LayerZero_SharedUtils} from "./LayerZeroSharedUtils.sol";
 // Contracts
 import {TimelockController} from "@openzeppelin/contracts/governance/TimelockController.sol";
 import {GensynToken} from "src/GensynToken.sol";
+import {IAccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+
+interface IOAppCore {
+    function setDelegate(address _delegate) external;
+}
 
 contract LayerZero_GensynMainnet_Utils is LayerZero_SharedUtils {
     // Gensyn Mainnet
@@ -17,37 +23,61 @@ contract LayerZero_GensynMainnet_Utils is LayerZero_SharedUtils {
     address constant GENSYN_TOKEN_OFT_ADAPTER = 0x5B90BcB2630ADa13836fb6ebFc9E7c8b4b2cF509;
 
     // Gensyn Mainnet Helpers
-    function _setup() internal returns (TimelockController adapterTimelock) {
+    function _setup(address delegate, address proposer) internal returns (TimelockController adapterTimelock) {
+        // 1. Deploy AdapterTimelock
+        adapterTimelock = new TimelockController({
+            minDelay: 7 days,
+            proposers: _buildSingletonArray(PORTO),
+            executors: _buildSingletonArray(address(0)), // allow anyone to execute
+            admin: address(0) // renounce admin role to prevent centralization
+        });
 
-        // // 1. Deploy AdapterTimelock
-        // adapterTimelock = new TimelockController({
-        //     minDelay: 7 days,
-        //     proposers: _buildSingletonArray(),
-        //     executors: _buildSingletonArray(address(0)), // allow anyone to execute
-        //     admin: address(0) // renounce admin role to prevent centralization
-        // });
+        // Switch to delegate
+        _useNewSender(delegate);
 
-        // // 2. Transfer OFTAdapter `owner` and `delegate` to the AdapterTimelock
-        // GENSYN_TOKEN_OFT_ADAPTER_GENSYN_MAINNET.setDelegate({
-        //     delegate_: address(adapterTimelock)
-        // });
-        // GENSYN_TOKEN_OFT_ADAPTER_GENSYN_MAINNET.transferOwnership({
-        //     newOwner_: address(adapterTimelock)
-        // });
+        // 2. Transfer OFTAdapter `owner` and `delegate` to the AdapterTimelock
+        IOAppCore(GENSYN_TOKEN_OFT_ADAPTER).setDelegate({_delegate: address(adapterTimelock)});
+        Ownable(GENSYN_TOKEN_OFT_ADAPTER).transferOwnership({newOwner: address(adapterTimelock)});
 
-        // // 3. Schedule Proposal 1
-        // GENSYN_TOKEN_TIMELOCK_GENSYN_MAINNET.scheduleBatch({
-        //     targets_: ,
-        //     values_: ,
-        //     calldatas_:
-        //         abi.encodeCall(
-        //             GENSYN_TOKEN_OFT_ADAPTER_GENSYN_MAINNET.setBridgeOperational,
-        //             (false)
-        //         )
-        //     ),
-        //     predecessor_: bytes32(0),
-        //     salt_: bytes32(0),
-        //     delay_: 7 days
-        // });
+        // Switch to delegate
+        _useNewSender(proposer);
+
+        // 3. Schedule Proposal 1
+        GENSYN_TOKEN_TIMELOCK.scheduleBatch({
+            targets: _proposal1Targets(),
+            values: _proposal1Values(),
+            payloads: _proposal1Calldatas(),
+            predecessor: bytes32(0),
+            salt: bytes32(0),
+            delay: 7 days
+        });
+    }
+
+    function _proposal1Targets() internal pure returns (address[] memory targets) {
+        // Initialize targets
+        targets = new address[](2);
+
+        // Build targets
+        targets[0] = address(GENSYN_TOKEN_TIMELOCK);
+        targets[1] = address(GENSYN_TOKEN_TIMELOCK);
+    }
+
+    function _proposal1Values() internal pure returns (uint256[] memory values) {
+        // Initialize values
+        values = new uint256[](2);
+
+        // Build values
+        values[0] = 0;
+        values[1] = 0;
+    }
+
+    function _proposal1Calldatas() internal view returns (bytes[] memory calldatas) {
+        // Initialize targets
+        calldatas = new bytes[](2);
+
+        // Grant PROPOSER_ROLE to PORTO and revoke PROPOSER_ROLE from the GENSYN_TOKEN_SAFE
+        calldatas[0] = abi.encodeCall(IAccessControl.grantRole, (GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), PORTO));
+        calldatas[1] =
+            abi.encodeCall(IAccessControl.revokeRole, (GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), GENSYN_TOKEN_SAFE));
     }
 }

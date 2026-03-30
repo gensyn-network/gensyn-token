@@ -94,13 +94,15 @@ contract LayerZero_EthereumMainnet_Utils is LayerZero_SharedUtils {
         // Initialize targets
         calldatas = new bytes[](4);
 
-        // Build calldatas
+        // Grant MINTER_ROLE and BURNER_ROLE to the BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER
         calldatas[0] = abi.encodeCall(
             IAccessControl.grantRole, (BRIDGED_GENSYN_TOKEN.MINTER_ROLE(), BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER)
         );
         calldatas[1] = abi.encodeCall(
             IAccessControl.grantRole, (BRIDGED_GENSYN_TOKEN.BURNER_ROLE(), BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER)
         );
+
+        // Grant PROPOSER_ROLE to PORTO and revoke PROPOSER_ROLE from the BRIDGED_GENSYN_TOKEN_SAFE
         calldatas[2] = abi.encodeCall(IAccessControl.grantRole, (BRIDGED_GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), PORTO));
         calldatas[3] = abi.encodeCall(
             IAccessControl.revokeRole, (BRIDGED_GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), BRIDGED_GENSYN_TOKEN_SAFE)
