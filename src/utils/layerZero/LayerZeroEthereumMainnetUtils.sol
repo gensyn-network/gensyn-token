@@ -48,7 +48,7 @@ contract LayerZero_EthereumMainnet_Utils is LayerZero_SharedUtils {
             payloads: proposal1Calldatas(),
             predecessor: bytes32(0),
             salt: bytes32(0),
-            delay: 7 days
+            delay: BRIDGED_GENSYN_TOKEN_TIMELOCK.getMinDelay()
         });
 
         // 4. Schedule Proposal 2
@@ -58,7 +58,7 @@ contract LayerZero_EthereumMainnet_Utils is LayerZero_SharedUtils {
             data: abi.encodeCall(IAccessControl.grantRole, (BRIDGED_GENSYN_TOKEN.DEFAULT_ADMIN_ROLE(), ANTONIO_EOA)),
             predecessor: bytes32(0),
             salt: bytes32(0),
-            delay: 7 days
+            delay: BRIDGED_GENSYN_TOKEN_TIMELOCK.getMinDelay()
         });
     }
 

@@ -33,6 +33,9 @@ contract LayerZero_EthereumMainnet_Test is LayerZero_EthereumMainnet_Utils, Test
         // Execute
         _execute();
 
+        // Validate after
+        _validateAfter({adapterTimelock: address(adapterTimelock)});
+
         // Cancel Proposal 2 to prevent it from being executed in the future
         BRIDGED_GENSYN_TOKEN_TIMELOCK.cancel({
             id: BRIDGED_GENSYN_TOKEN_TIMELOCK.hashOperation({
@@ -45,9 +48,6 @@ contract LayerZero_EthereumMainnet_Test is LayerZero_EthereumMainnet_Utils, Test
                 salt: bytes32(0)
             })
         });
-
-        // Validate after
-        _validateAfter({adapterTimelock: address(adapterTimelock)});
     }
 
     function _execute() internal {

@@ -18,9 +18,6 @@ contract LayerZero_GensynMainnet_Test is LayerZero_GensynMainnet_Utils, Test {
         // Validate before
         _validateBefore();
 
-        // Start Prank
-        vm.startPrank(ANTONIO_EOA);
-
         // Deploy Adapter Timelock and Move Adapter Permissions (from ANTONIO_EOA)
         _useNewSender(ANTONIO_EOA);
         TimelockController adapterTimelock = _deployAdapterTimelockAndMoveAdapterPermissions();
