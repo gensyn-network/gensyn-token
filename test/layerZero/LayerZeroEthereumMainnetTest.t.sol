@@ -16,9 +16,6 @@ contract LayerZero_EthereumMainnet_Test is LayerZero_EthereumMainnet_Utils, Test
         // Fork Ethereum Mainnet
         vm.createSelectFork("ethereum-mainnet", 24_769_641);
 
-        // Start Prank
-        vm.startPrank(ANTONIO_EOA);
-
         // Validate before
         _validateBefore();
 

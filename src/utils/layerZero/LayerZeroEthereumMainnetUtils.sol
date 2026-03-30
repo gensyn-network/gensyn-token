@@ -71,8 +71,8 @@ contract LayerZero_EthereumMainnet_Utils is LayerZero_SharedUtils {
         targets = new address[](4);
 
         // Build targets
-        targets[0] = address(BRIDGED_GENSYN_TOKEN_TIMELOCK);
-        targets[1] = address(BRIDGED_GENSYN_TOKEN_TIMELOCK);
+        targets[0] = address(BRIDGED_GENSYN_TOKEN);
+        targets[1] = address(BRIDGED_GENSYN_TOKEN);
         targets[2] = address(BRIDGED_GENSYN_TOKEN_TIMELOCK);
         targets[3] = address(BRIDGED_GENSYN_TOKEN_TIMELOCK);
     }
