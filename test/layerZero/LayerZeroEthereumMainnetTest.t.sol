@@ -64,8 +64,13 @@ contract LayerZero_EthereumMainnet_Test is LayerZero_EthereumMainnet_Utils, Test
     }
 
     function _validateBefore() internal view {
-        // Validate adapter delegate & owner
-        // assertEq(BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER.delegate(), ANTONIO_EOA);
+        // Validate adapter delegate
+        address endpoint = IOAppCoreLike(address(BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER)).endpoint();
+        address delegate =
+            ILayerZeroEndpointV2Like(endpoint).delegates(address(BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER));
+        assertEq(delegate, ANTONIO_EOA);
+
+        // Validate adapter owner
         assertEq(
             Ownable(BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER).owner(),
             ANTONIO_EOA,
