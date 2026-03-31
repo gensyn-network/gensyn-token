@@ -8,14 +8,7 @@ import {Test} from "forge-std/Test.sol";
 // Interfaces
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {TimelockController} from "@openzeppelin/contracts/governance/TimelockController.sol";
-
-interface IOAppCoreLike {
-    function endpoint() external view returns (address);
-}
-
-interface ILayerZeroEndpointV2Like {
-    function delegates(address oapp) external view returns (address);
-}
+import {IOAppCoreLike, ILayerZeroEndpointV2Like} from "src/utils/layerZero/LayerZeroSharedUtils.sol";
 
 contract LayerZero_GensynMainnet_Test is LayerZero_GensynMainnet_Utils, Test {
     // Tests

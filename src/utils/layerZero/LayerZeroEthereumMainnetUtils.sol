@@ -2,17 +2,13 @@
 pragma solidity 0.8.30;
 
 // Inheritance
-import {LayerZero_SharedUtils} from "./LayerZeroSharedUtils.sol";
+import {LayerZero_SharedUtils, IOAppCoreLike} from "./LayerZeroSharedUtils.sol";
 
 // Contracts
 import {TimelockController} from "@openzeppelin/contracts/governance/TimelockController.sol";
 import {BridgedGensynToken} from "src/BridgedGensynToken.sol";
 import {IAccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-
-interface IOAppCoreLike {
-    function setDelegate(address _delegate) external;
-}
 
 contract LayerZero_EthereumMainnet_Utils is LayerZero_SharedUtils {
     // Ethereum Mainnet
@@ -52,7 +48,7 @@ contract LayerZero_EthereumMainnet_Utils is LayerZero_SharedUtils {
         });
 
         // 4. Schedule Proposal 2
-        // Note: This is just in case we make a mistake, we don't have to wait another 7 days.
+        // Note: This is just in case we make a mistake, so we don't have to wait another 7 days.
         BRIDGED_GENSYN_TOKEN_TIMELOCK.schedule({
             target: address(BRIDGED_GENSYN_TOKEN),
             value: 0,
@@ -62,6 +58,9 @@ contract LayerZero_EthereumMainnet_Utils is LayerZero_SharedUtils {
             delay: BRIDGED_GENSYN_TOKEN_TIMELOCK.getMinDelay()
         });
     }
+
+    // ===== PUBLIC VIEWS =====
+    // Note: (so we can also use them when Signing the EIP-712 structs via our Gnosis Safe)
 
     function proposal1Targets() public pure returns (address[] memory targets) {
         // Initialize targets

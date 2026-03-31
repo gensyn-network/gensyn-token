@@ -2,17 +2,13 @@
 pragma solidity 0.8.30;
 
 // Inheritance
-import {LayerZero_SharedUtils} from "./LayerZeroSharedUtils.sol";
+import {LayerZero_SharedUtils, IOAppCoreLike} from "./LayerZeroSharedUtils.sol";
 
 // Contracts
 import {TimelockController} from "@openzeppelin/contracts/governance/TimelockController.sol";
 import {GensynToken} from "src/GensynToken.sol";
 import {IAccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-
-interface IOAppCoreLike {
-    function setDelegate(address _delegate) external;
-}
 
 contract LayerZero_GensynMainnet_Utils is LayerZero_SharedUtils {
     // Gensyn Mainnet
@@ -51,6 +47,9 @@ contract LayerZero_GensynMainnet_Utils is LayerZero_SharedUtils {
             delay: GENSYN_TOKEN_TIMELOCK.getMinDelay()
         });
     }
+
+    // ===== PUBLIC VIEWS =====
+    // Note: (so we can also use them when Signing the EIP-712 structs via our Gnosis Safe)
 
     function proposal1Targets() public pure returns (address[] memory targets) {
         // Initialize targets
