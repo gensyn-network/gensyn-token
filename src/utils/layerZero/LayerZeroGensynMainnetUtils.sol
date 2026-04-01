@@ -17,6 +17,7 @@ contract LayerZero_GensynMainnet_Utils is LayerZero_SharedUtils {
         TimelockController(payable(0xb041762ee4efcA8F9E33e5f67eC0bcDC4cB1a9e9));
     GensynToken constant GENSYN_TOKEN = GensynToken(0x4e742319f6b0FeC4afA504fC8ED3cEAB0fb751A2);
     address constant GENSYN_TOKEN_OFT_ADAPTER = 0x5B90BcB2630ADa13836fb6ebFc9E7c8b4b2cF509;
+    address constant PORTO_GENSYN = 0x1234567890AbcdEF1234567890aBcdef12345678; // dummy address
 
     // Gensyn Mainnet Helpers
     function _deployAdapterTimelockAndMoveAdapterPermissions() internal returns (TimelockController adapterTimelock) {
@@ -26,7 +27,7 @@ contract LayerZero_GensynMainnet_Utils is LayerZero_SharedUtils {
         // 1. Deploy AdapterTimelock
         adapterTimelock = new TimelockController({
             minDelay: 7 days,
-            proposers: _buildSingletonArray(PORTO),
+            proposers: _buildSingletonArray(PORTO_GENSYN),
             executors: _buildSingletonArray(address(0)), // allow anyone to execute
             admin: address(0) // renounce admin role to prevent centralization
         });
@@ -78,8 +79,8 @@ contract LayerZero_GensynMainnet_Utils is LayerZero_SharedUtils {
         calldatas = new bytes[](4);
 
         // Grant PROPOSER_ROLE and CANCELLER_ROLE to PORTO
-        calldatas[0] = abi.encodeCall(IAccessControl.grantRole, (GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), PORTO));
-        calldatas[1] = abi.encodeCall(IAccessControl.grantRole, (GENSYN_TOKEN_TIMELOCK.CANCELLER_ROLE(), PORTO));
+        calldatas[0] = abi.encodeCall(IAccessControl.grantRole, (GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), PORTO_GENSYN));
+        calldatas[1] = abi.encodeCall(IAccessControl.grantRole, (GENSYN_TOKEN_TIMELOCK.CANCELLER_ROLE(), PORTO_GENSYN));
 
         // Revoke PROPOSER_ROLE and CANCELLER_ROLE from the GENSYN_TOKEN_SAFE
         calldatas[2] =

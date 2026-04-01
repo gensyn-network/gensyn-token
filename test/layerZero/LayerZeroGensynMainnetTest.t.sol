@@ -67,7 +67,7 @@ contract LayerZero_GensynMainnet_Test is LayerZero_GensynMainnet_Utils, Test {
             "_validateBefore: safe not the proposer on the timelock"
         );
         assertFalse(
-            GENSYN_TOKEN_TIMELOCK.hasRole(GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), PORTO),
+            GENSYN_TOKEN_TIMELOCK.hasRole(GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), PORTO_GENSYN),
             "_validateBefore: porto has PROPOSER_ROLE on the timelock"
         );
 
@@ -77,7 +77,7 @@ contract LayerZero_GensynMainnet_Test is LayerZero_GensynMainnet_Utils, Test {
             "_validateBefore: safe not the canceller on the timelock"
         );
         assertFalse(
-            GENSYN_TOKEN_TIMELOCK.hasRole(GENSYN_TOKEN_TIMELOCK.CANCELLER_ROLE(), PORTO),
+            GENSYN_TOKEN_TIMELOCK.hasRole(GENSYN_TOKEN_TIMELOCK.CANCELLER_ROLE(), PORTO_GENSYN),
             "_validateBefore: porto has CANCELLER_ROLE on the timelock"
         );
     }
@@ -101,7 +101,7 @@ contract LayerZero_GensynMainnet_Test is LayerZero_GensynMainnet_Utils, Test {
             "_validateAfter: safe still has PROPOSER_ROLE on the timelock"
         );
         assertTrue(
-            GENSYN_TOKEN_TIMELOCK.hasRole(GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), PORTO),
+            GENSYN_TOKEN_TIMELOCK.hasRole(GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), PORTO_GENSYN),
             "_validateAfter: porto does not have PROPOSER_ROLE on the timelock"
         );
 
@@ -111,7 +111,7 @@ contract LayerZero_GensynMainnet_Test is LayerZero_GensynMainnet_Utils, Test {
             "_validateAfter: safe still has CANCELLER_ROLE on the timelock"
         );
         assertTrue(
-            GENSYN_TOKEN_TIMELOCK.hasRole(GENSYN_TOKEN_TIMELOCK.CANCELLER_ROLE(), PORTO),
+            GENSYN_TOKEN_TIMELOCK.hasRole(GENSYN_TOKEN_TIMELOCK.CANCELLER_ROLE(), PORTO_GENSYN),
             "_validateAfter: porto does not have CANCELLER_ROLE on the timelock"
         );
     }

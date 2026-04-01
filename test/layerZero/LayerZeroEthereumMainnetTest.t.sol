@@ -38,7 +38,7 @@ contract LayerZero_EthereumMainnet_Test is LayerZero_EthereumMainnet_Utils, Test
         _validateAfter({adapterTimelock: address(adapterTimelock)});
 
         // Cancel Proposal 2 (from PORTO)
-        _useNewSender(PORTO);
+        _useNewSender(PORTO_ETHEREUM);
         BRIDGED_GENSYN_TOKEN_TIMELOCK.cancel({
             id: BRIDGED_GENSYN_TOKEN_TIMELOCK.hashOperation({
                 target: address(BRIDGED_GENSYN_TOKEN),
@@ -99,7 +99,7 @@ contract LayerZero_EthereumMainnet_Test is LayerZero_EthereumMainnet_Utils, Test
             "_validateBefore: safe not the proposer on the timelock"
         );
         assertFalse(
-            BRIDGED_GENSYN_TOKEN_TIMELOCK.hasRole(BRIDGED_GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), PORTO),
+            BRIDGED_GENSYN_TOKEN_TIMELOCK.hasRole(BRIDGED_GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), PORTO_ETHEREUM),
             "_validateBefore: porto has PROPOSER_ROLE on the timelock"
         );
 
@@ -111,7 +111,7 @@ contract LayerZero_EthereumMainnet_Test is LayerZero_EthereumMainnet_Utils, Test
             "_validateBefore: safe not the canceller on the timelock"
         );
         assertFalse(
-            BRIDGED_GENSYN_TOKEN_TIMELOCK.hasRole(BRIDGED_GENSYN_TOKEN_TIMELOCK.CANCELLER_ROLE(), PORTO),
+            BRIDGED_GENSYN_TOKEN_TIMELOCK.hasRole(BRIDGED_GENSYN_TOKEN_TIMELOCK.CANCELLER_ROLE(), PORTO_ETHEREUM),
             "_validateBefore: porto has CANCELLER_ROLE on the timelock"
         );
     }
@@ -152,7 +152,7 @@ contract LayerZero_EthereumMainnet_Test is LayerZero_EthereumMainnet_Utils, Test
             "_validateAfter: safe still has PROPOSER_ROLE on the timelock"
         );
         assertTrue(
-            BRIDGED_GENSYN_TOKEN_TIMELOCK.hasRole(BRIDGED_GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), PORTO),
+            BRIDGED_GENSYN_TOKEN_TIMELOCK.hasRole(BRIDGED_GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), PORTO_ETHEREUM),
             "_validateAfter: porto does not have PROPOSER_ROLE on the timelock"
         );
 
@@ -164,7 +164,7 @@ contract LayerZero_EthereumMainnet_Test is LayerZero_EthereumMainnet_Utils, Test
             "_validateAfter: safe still has CANCELLER_ROLE on the timelock"
         );
         assertTrue(
-            BRIDGED_GENSYN_TOKEN_TIMELOCK.hasRole(BRIDGED_GENSYN_TOKEN_TIMELOCK.CANCELLER_ROLE(), PORTO),
+            BRIDGED_GENSYN_TOKEN_TIMELOCK.hasRole(BRIDGED_GENSYN_TOKEN_TIMELOCK.CANCELLER_ROLE(), PORTO_ETHEREUM),
             "_validateAfter: porto does not have CANCELLER_ROLE on the timelock"
         );
     }

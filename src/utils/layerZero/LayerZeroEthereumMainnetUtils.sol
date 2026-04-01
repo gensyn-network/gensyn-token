@@ -17,6 +17,7 @@ contract LayerZero_EthereumMainnet_Utils is LayerZero_SharedUtils {
         TimelockController(payable(0x78541D1CE97f2F354582344f8319E4D7EF2037FF));
     BridgedGensynToken constant BRIDGED_GENSYN_TOKEN = BridgedGensynToken(0x4d7078DDd6cCFED2F85dB5B7D3Ff16828d378d48);
     address constant BRIDGED_GENSYN_TOKEN_MINT_BURN_OFT_ADAPTER = 0x44A39B6b0F544F7f1b0624d312eccD995433A3e4;
+    address constant PORTO_ETHEREUM = 0x1234567890AbcdEF1234567890aBcdef12345678; // dummy address
 
     // Ethereum Mainnet Helpers
     function _deployAdapterTimelockAndMoveAdapterPermissions() internal returns (TimelockController adapterTimelock) {
@@ -26,7 +27,7 @@ contract LayerZero_EthereumMainnet_Utils is LayerZero_SharedUtils {
         // 1. Deploy AdapterTimelock
         adapterTimelock = new TimelockController({
             minDelay: 7 days,
-            proposers: _buildSingletonArray(PORTO),
+            proposers: _buildSingletonArray(PORTO_ETHEREUM),
             executors: _buildSingletonArray(address(0)), // allow anyone to execute
             admin: address(0) // renounce admin role to prevent centralization
         });
@@ -101,8 +102,8 @@ contract LayerZero_EthereumMainnet_Utils is LayerZero_SharedUtils {
         );
 
         // Grant PROPOSER_ROLE and CANCELLER_ROLE to PORTO
-        calldatas[2] = abi.encodeCall(IAccessControl.grantRole, (BRIDGED_GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), PORTO));
-        calldatas[3] = abi.encodeCall(IAccessControl.grantRole, (BRIDGED_GENSYN_TOKEN_TIMELOCK.CANCELLER_ROLE(), PORTO));
+        calldatas[2] = abi.encodeCall(IAccessControl.grantRole, (BRIDGED_GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), PORTO_ETHEREUM));
+        calldatas[3] = abi.encodeCall(IAccessControl.grantRole, (BRIDGED_GENSYN_TOKEN_TIMELOCK.CANCELLER_ROLE(), PORTO_ETHEREUM));
 
         // Revoke PROPOSER_ROLE and CANCELLER_ROLE from the BRIDGED_GENSYN_TOKEN_SAFE
         calldatas[4] = abi.encodeCall(
