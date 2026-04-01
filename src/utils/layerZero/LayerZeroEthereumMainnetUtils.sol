@@ -102,8 +102,10 @@ contract LayerZero_EthereumMainnet_Utils is LayerZero_SharedUtils {
         );
 
         // Grant PROPOSER_ROLE and CANCELLER_ROLE to PORTO
-        calldatas[2] = abi.encodeCall(IAccessControl.grantRole, (BRIDGED_GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), PORTO_ETHEREUM));
-        calldatas[3] = abi.encodeCall(IAccessControl.grantRole, (BRIDGED_GENSYN_TOKEN_TIMELOCK.CANCELLER_ROLE(), PORTO_ETHEREUM));
+        calldatas[2] =
+            abi.encodeCall(IAccessControl.grantRole, (BRIDGED_GENSYN_TOKEN_TIMELOCK.PROPOSER_ROLE(), PORTO_ETHEREUM));
+        calldatas[3] =
+            abi.encodeCall(IAccessControl.grantRole, (BRIDGED_GENSYN_TOKEN_TIMELOCK.CANCELLER_ROLE(), PORTO_ETHEREUM));
 
         // Revoke PROPOSER_ROLE and CANCELLER_ROLE from the BRIDGED_GENSYN_TOKEN_SAFE
         calldatas[4] = abi.encodeCall(
