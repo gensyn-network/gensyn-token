@@ -14,7 +14,7 @@ import {console2} from "forge-std/console2.sol";
 
 contract GensynToken_Script is Broadcaster {
     uint256 constant GENSYN_TESTNET_CHAIN_ID = 685_685;
-    // uint256 constant GENSYN_MAINNET_CHAIN_ID = ???;
+    uint256 constant GENSYN_MAINNET_CHAIN_ID = 685_689;
 
     function deploy() external broadcast {
         // Get params
@@ -70,6 +70,10 @@ contract GensynToken_Script is Broadcaster {
         if (block.chainid == GENSYN_TESTNET_CHAIN_ID) {
             gensynTokenTimelockProposer = vm.envAddress("GENSYN_TOKEN_TIMELOCK_PROPOSER_TESTNET");
             gensynTokenRecipient = vm.envAddress("GENSYN_TOKEN_RECIPIENT_TESTNET");
+        } else if (block.chainid == GENSYN_MAINNET_CHAIN_ID) {
+            // gensynTokenTimelockProposer = vm.envAddress("GENSYN_TOKEN_TIMELOCK_PROPOSER_MAINNET");
+            // gensynTokenRecipient = vm.envAddress("GENSYN_TOKEN_RECIPIENT_MAINNET");
+            revert("Mainnet deployments not allowed yet");
         } else {
             revert("Invalid Chain ID");
         }
