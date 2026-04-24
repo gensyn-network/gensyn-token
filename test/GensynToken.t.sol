@@ -74,7 +74,7 @@ contract GensynTokenTest is Tester {
 
     function test_InitialState() external view {
         assertEq(gensynTokenProxy.name(), "Gensyn", "unexpected name");
-        assertEq(gensynTokenProxy.symbol(), "GEN", "unexpected symbol");
+        assertEq(gensynTokenProxy.symbol(), "AI", "unexpected symbol");
         assertEq(gensynTokenProxy.decimals(), 18, "unexpected decimals");
         assertEq(gensynTokenProxy.INITIAL_SUPPLY(), 10_000_000_000e18, "unexpected initial supply");
         assertEq(gensynTokenProxy.totalSupply(), 10_000_000_000e18, "unexpected total supply");
