@@ -5,8 +5,9 @@ import {
     ERC20BurnableUpgradeable,
     ERC20Upgradeable
 } from "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20BurnableUpgradeable.sol";
-import {ERC20VotesUpgradeable} from
-    "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpgradeable.sol";
+import {
+    ERC20VotesUpgradeable
+} from "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpgradeable.sol";
 import {
     ERC20PermitUpgradeable,
     NoncesUpgradeable
@@ -43,7 +44,7 @@ contract GensynToken is
      * @notice ERC20 symbol
      * @dev Private, as ERC20 already exposes "symbol()"
      */
-    string private constant _SYMBOL = "GEN";
+    string private constant _SYMBOL = "AI";
 
     /**
      * @notice Implementation constructor.
