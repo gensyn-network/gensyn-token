@@ -19,23 +19,22 @@ contract GensynToken_Script is Broadcaster {
             BridgedGensynToken bridgedGensynTokenProxy
         )
     {
-        uint256 timelockMinDelay = 7 days;
+        // Pick temp admin (will be renounced later)
+        address tempAdmin = 0x4eE2Ef21c70b00d1D3E613f1a311670565C8C556;
 
-        address gensynSafeAddress = 0x90442673dae1b1572a3D994A4D795c8977A97ECD;
+        // Pick timelock proposers
+        address[] memory timelockProposers = new address[](0);
 
-        address[] memory timelockProposers = new address[](1);
-        timelockProposers[0] = gensynSafeAddress;
-
+        // Pick timelock executors
         address[] memory timelockExecutors = new address[](1);
         timelockExecutors[0] = address(0); // allow anyone to execute
 
-        address timelockAdmin = address(0); // renounce admin role to prevent centralization
-
+        // Pick gensyn token recipient
         address gensynTokenRecipient = 0x000000000000000000000000000000000000dEaD;
 
         // Deploy Timelock
         timelock = new TimelockController({
-            minDelay: timelockMinDelay, proposers: timelockProposers, executors: timelockExecutors, admin: timelockAdmin
+            minDelay: 7 days, proposers: timelockProposers, executors: timelockExecutors, admin: tempAdmin
         });
 
         // Deploy new implementation
@@ -49,7 +48,7 @@ contract GensynToken_Script is Broadcaster {
                     _data: abi.encodeCall(
                         GensynToken.initialize,
                         (
-                            address(timelock), // admin_
+                            tempAdmin, // admin_
                             gensynTokenRecipient // recipient_
                         )
                     )
