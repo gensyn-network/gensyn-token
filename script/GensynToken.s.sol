@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.30;
+pragma solidity 0.8.35;
 
 // Inheritance
 import {Broadcaster} from "../src/utils/Utils.sol";
 
 // Other
 import {GensynToken} from "../src/GensynToken.sol";
-import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {TimelockController} from "@openzeppelin/contracts/governance/TimelockController.sol";
 
 // Logging

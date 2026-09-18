@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.30;
+pragma solidity 0.8.35;
 
 // Inheritance
 import {CommonBase} from "forge-std/Base.sol";
@@ -56,6 +56,7 @@ abstract contract Deployer is CommonBase {
 }
 
 abstract contract Broadcaster is Deployer, Script {
+    // forge-lint: disable-next-item(unwrapped-modifier-logic)
     modifier broadcast() {
         vm.startBroadcast();
         _;
