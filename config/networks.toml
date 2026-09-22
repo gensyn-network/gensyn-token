@@ -1,0 +1,5 @@
+[ethereum-mainnet]
+block = 25279624
+porto = "0x67bdd2E6247dF3FF5Be1EB49dBe01B8bfaD3FB1d"
+timelock = "0x78541D1CE97f2F354582344f8319E4D7EF2037FF"
+ai = "0x4d7078ddd6ccfed2f85db5b7d3ff16828d378d48"

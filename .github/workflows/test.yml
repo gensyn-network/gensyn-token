@@ -34,7 +34,9 @@ jobs:
           forge build --sizes
         id: build
 
+      # The fork suite (BridgedGensynTokenV2Fork) forks Ethereum mainnet and needs
+      # ALCHEMY_API_KEY, which CI doesn't have. Run it locally with a populated .env.
       - name: Run Forge tests
         run: |
-          forge test -vvv
+          forge test --no-match-contract Fork -vvv
         id: test
